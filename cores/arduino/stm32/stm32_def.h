@@ -6,7 +6,7 @@
  * @brief STM32 core version number
  */
 #define STM32_CORE_VERSION_MAJOR    (0x02U) /*!< [31:24] major version */
-#define STM32_CORE_VERSION_MINOR    (0x00U) /*!< [23:16] minor version */
+#define STM32_CORE_VERSION_MINOR    (0x01U) /*!< [23:16] minor version */
 #define STM32_CORE_VERSION_PATCH    (0x00U) /*!< [15:8]  patch version */
 /*
  * Extra label for development:
@@ -14,7 +14,7 @@
  * [1-9]: release candidate
  * F[0-9]: development
  */
-#define STM32_CORE_VERSION_EXTRA    (0x00U) /*!< [7:0]  extra version */
+#define STM32_CORE_VERSION_EXTRA    (0xF0U) /*!< [7:0]  extra version */
 #define STM32_CORE_VERSION          ((STM32_CORE_VERSION_MAJOR << 24U)\
                                         |(STM32_CORE_VERSION_MINOR << 16U)\
                                         |(STM32_CORE_VERSION_PATCH << 8U )\
@@ -22,7 +22,7 @@
 
 #define USE_HAL_DRIVER
 
-#ifdef STM32F0xx
+#if defined(STM32F0xx)
   #include "stm32f0xx.h"
 #elif defined(STM32F1xx)
   #include "stm32f1xx.h"
@@ -52,6 +52,8 @@
   #include "stm32mp1xx.h"
 #elif defined(STM32WBxx)
   #include "stm32wbxx.h"
+#elif defined(STM32WLxx)
+  #include "stm32wlxx.h"
 #else
   #error "STM32YYxx chip series is not defined in boards.txt."
 #endif
@@ -61,8 +63,20 @@
 #endif
 
 // Here define some compatibility
+#ifndef ADC1
+  #define ADC1 ADC
+#endif
 #ifndef CAN1
   #define CAN1 CAN
+#endif
+#ifndef DAC1
+  #define DAC1 DAC
+#endif
+
+/* STM32G0xx defined USB_DRD_FS */
+#if !defined(USB ) && defined(USB_DRD_FS)
+  #define USB USB_DRD_FS
+  #define PinMap_USB PinMap_USB_DRD_FS
 #endif
 
 /**
